@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+ <!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 1.1//EN"
+       "http://jakarta.apache.org/struts/dtds/tiles-config_1_1.dtd">
+
+<tiles-definitions>
+    <definition name="xml.layout" path="/pages/layout/layout.jsp">
+        <put name="header" value="/pages/tiles/header.jsp"/>
+        <put name="footer" value="/pages/tiles/footer.jsp" />
+    </definition>
+    
+    <definition name="category.list" extends="xml.layout">
+        <put name="body" value="/pages/tiles/category.jsp"/>
+    </definition>
+    
+    <definition name="subcategory.list" extends="xml.layout">
+        <put name="body" value="/pages/tiles/subcategory.jsp"/>
+    </definition>
+    
+    <definition name="products.list" extends="xml.layout">
+        <put name="body" value="/pages/tiles/products.jsp"/>
+    </definition>
+    
+    <definition name="product.add" extends="xml.layout">
+        <put name="body" value="/pages/tiles/add.jsp"/>
+    </definition>
+</tiles-definitions>

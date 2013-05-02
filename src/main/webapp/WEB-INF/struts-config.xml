@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE struts-config PUBLIC
+          "-//Apache Software Foundation//DTD Struts Configuration 1.3//EN"
+          "http://jakarta.apache.org/struts/dtds/struts-config_1_3.dtd">
+
+
+<struts-config>
+    <form-beans>
+        <form-bean name="productForm" type="com.epam.struts.presentation.form.ProductForm"/>
+    </form-beans>
+    
+    <action-mappings>
+        <action path="/index" forward="/category.do"/>
+        
+        <action path="/category" type="com.epam.struts.presentation.action.ProductAction"
+                scope="request" parameter="document" name="productForm">
+            <forward name="success" path="category.list"/> 
+        </action>
+        
+        <action path="/subcategory" type="com.epam.struts.presentation.action.ProductAction"
+                scope="request" parameter="document" name="productForm">
+            <forward name="success" path="subcategory.list"/> 
+        </action>
+        
+        <action path="/products" type="com.epam.struts.presentation.action.ProductAction"
+                scope="request" parameter="document" name="productForm">
+            <forward name="success" path="products.list"/> 
+        </action>
+        
+        <action path="/update" type="com.epam.struts.presentation.action.ProductAction"
+                scope="request" parameter="update" name="productForm">
+            <forward name="success" path="/products.do"/> 
+        </action>
+        
+        <action path="/add" type="com.epam.struts.presentation.action.ProductAction"
+                scope="request" parameter="document" name="productForm">
+            <forward name="success" path="product.add"/> 
+        </action>
+        
+        <action path="/save" type="com.epam.struts.presentation.action.ProductAction"
+                scope="request" parameter="save" name="productForm">
+            <forward name="success" path="/products.do"/> 
+        </action>
+    </action-mappings>
+    
+    <message-resources parameter="com.epam.struts.resources.message"/>
+        
+    <plug-in className="org.apache.struts.tiles.TilesPlugin" >
+        <set-property property="definitions-config" value="/WEB-INF/tiles-defs.xml"/>
+    </plug-in>
+        
+</struts-config>
