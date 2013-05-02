@@ -8,8 +8,9 @@
 <c:forEach var="subcat" items="${productForm.document.rootElement.children[productForm.category].children}" varStatus="i">
     <c:set target="${path}" property="category" value="${productForm.category}"/>
     <c:set target="${path}" property="subcategory" value="${i.index}"/>
+    <h3>
     <html:link action="products" name="path">
-        <h3>${subcat.attributes[0].value}
+        ${subcat.attributes[0].value}
         </html:link>
         <jdom:countProducts element="${subcat}"/>
     </h3>

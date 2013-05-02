@@ -4,8 +4,9 @@
 <%@taglib uri="/WEB-INF/jdom.tld" prefix="jdom" %>
 
 <c:forEach var="cat" items="${productForm.document.rootElement.children}" varStatus="i">
+    <h3>
     <html:link action="subcategory" paramId="category" paramProperty="index" paramName="i">
-        <h3>${cat.attributes[0].value}
+        ${cat.attributes[0].value}
         </html:link>
         <jdom:countProducts element="${cat}"/>
     </h3>
