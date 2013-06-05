@@ -14,7 +14,7 @@
                 <th>Date of issue</th>
                 <th>Color</th>
                 <th>Price/In Stock</th>
-                <nested:iterate property="children" indexId="i">
+                    <nested:iterate property="children" indexId="i">
                 <tr>
                     <td>
                         <nested:text property="attributes[0].value" onchange="validateExists(this)"
@@ -48,10 +48,10 @@
         </tr>
     </table>
     <script>var size =${i};</script>
-    <input type="button" value='<bean:message key="string.add"/>'
-           onclick="location.href = 'add.do?category=${productForm.category}&subcategory=${productForm.subcategory}'">
     <input type="button" value='<bean:message key="string.back"/>'
            onclick="location.href = 'subcategory.do?category=${productForm.category}'">
+    <input type="button" value='<bean:message key="string.add"/>'
+           onclick="location.href = 'add.do?category=${productForm.category}&subcategory=${productForm.subcategory}'"> 
     <html:hidden property="category" value="${productForm.category}"/>
     <html:hidden property="subcategory" value="${productForm.subcategory}"/>
 </nested:nest>

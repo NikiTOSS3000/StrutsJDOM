@@ -2,6 +2,9 @@
     margin: 0;
     padding: 0;
 }
+.errors{
+    color: red;
+}
 html {
     height: 100%;
 }

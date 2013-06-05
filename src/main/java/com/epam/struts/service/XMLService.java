@@ -1,19 +1,16 @@
 package com.epam.struts.service;
 
 import com.epam.struts.model.Product;
-import com.epam.struts.presentation.form.ProductForm;
 import com.epam.struts.presentation.servlet.JDOMServlet;
 import com.epam.struts.resources.Constants;
 import com.epam.struts.util.MessageManager;
-import com.epam.struts.xsl.XSLTransformer;
+import com.epam.struts.xsl.ProductsTransformerService;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.logging.Level;
-import javax.servlet.http.HttpServletRequest;
 import javax.xml.transform.TransformerException;
 import org.apache.log4j.Logger;
 import org.jdom2.Document;
@@ -82,9 +79,9 @@ public final class XMLService {
 
     public static String getTransformedResponse(String xml, String xsl, HashMap<String, Object> param) {
         String s = null;
-        XSLTransformer transformer = new XSLTransformer();
+        ProductsTransformerService transformerService = ProductsTransformerService.getInstance();
         try {
-            s = transformer.transform(xml, xsl, param);
+            s = transformerService.transform(xml, xsl, param);
         } catch (TransformerException ex) {
             logger.error(ex);
             s = ERROR_MSG_PREFIX + ex.getMessage();

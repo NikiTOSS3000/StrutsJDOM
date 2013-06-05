@@ -7,7 +7,7 @@
        value="${productForm.document.rootElement.children[productForm.category].attributes[0].value}" />
 <c:set var="subcatName"
        value="${productForm.document.rootElement.children[productForm.category].children[productForm.subcategory].attributes[0].value}" />
-<html:form action="save" onsubmit="return validateAdd()">
+<html:form action="save" onsubmit="return validateAdd()" style="padding: 10px;">
     <dl>
         <dt>
         <label for="name">
@@ -17,6 +17,7 @@
         <dd>
             <html:text property="product.name" styleId="name"
                        onchange="validateExists(this)" onkeyup="validateExists(this)"/>
+            <span id="nameError" class="errors"></span>
         </dd>
         <dt>
         <label for="producer">
@@ -26,6 +27,7 @@
         <dd>
             <html:text property="product.producer" styleId="producer"
                        onchange="validateExists(this)" onkeyup="validateExists(this)"/>
+            <span id="producerError" class="errors"></span>
         </dd>
         <dt>
         <label for="model">
@@ -35,7 +37,7 @@
         <dd>
             <html:text property="product.model" styleId="model"
                        onchange="validateModel(this)" onkeyup="validateModel(this)"/>
-            <span class="note">(exmpl. AD102)</span>
+            <span id="modelError" class="errors"></span>
         </dd>
 
         <dt>
@@ -46,7 +48,7 @@
         <dd>
             <html:text property="product.date" styleId="date"
                        onchange="validateDate(this)" onkeyup="validateDate(this)"/>
-            <span class="note">(dd-MM-yyyy)</span>
+            <span id="dateError" class="errors"></span>
         </dd>
 
         <dt>
@@ -57,6 +59,7 @@
         <dd>
             <html:text property="product.color" styleId="color"
                        onchange="validateExists(this)" onkeyup="validateExists(this)"/>
+            <span id="colorError" class="errors"/>
         </dd>
         <dt>
         <label for="instock">
@@ -75,6 +78,7 @@
         <dd>
             <html:text property="product.price" styleId="price" disabled="true" value=""
                        onchange="validatePrice(this)" onkeyup="validatePrice(this)"/>
+            <span id="priceError" class="errors"/>
         </dd>
     </dl>
     <html:hidden property="product.category" value="${catName}"/>

@@ -15,4 +15,6 @@ public final class Constants {
     public static final String ADD = "add";
     public static final String SAVE = "save";
     public static final String CANCEL = "cancel";
+    
+    private Constants() {}
 }

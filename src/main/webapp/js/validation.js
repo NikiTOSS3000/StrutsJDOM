@@ -1,5 +1,5 @@
 var background_norm = "white";
-var background_fail = "#fcc";
+var background_fail = "salmon";
 var background_gray = "#eee";
 
 function validateExists(e) {
@@ -92,14 +92,44 @@ function validateUpdate() {
 function validateAdd() {
     isValid = true;
     isNameValid = validateExists(document.getElementById('name'));
+    if (!isNameValid) {
+        document.getElementById("nameError").innerHTML = "Name is absent";
+    } else {
+        document.getElementById("nameError").innerHTML = "";
+    }
     isProducerValid = validateExists(document.getElementById('producer'));
+    if (!isProducerValid) {
+        document.getElementById("producerError").innerHTML = "Producer is absent";
+    } else {
+        document.getElementById("producerError").innerHTML = "";
+    }
     isModelValid = validateModel(document.getElementById('model'));
+    if (!isModelValid) {
+        document.getElementById("modelError").innerHTML = "Model must be in format (AD102)";
+    } else {
+        document.getElementById("modelError").innerHTML = "";
+    }
     isDateValid = validateDate(document.getElementById('date'));
+    if (!isDateValid) {
+        document.getElementById("dateError").innerHTML = "Date must be in format (dd-MM-yyyy)";
+    } else {
+        document.getElementById("dateError").innerHTML = "";
+    }
     isColorValid = validateExists(document.getElementById('color'));
+    if (!isColorValid) {
+        document.getElementById("colorError").innerHTML = "Color is absent";
+    } else {
+        document.getElementById("colorError").innerHTML = "";
+    }
     isValid = isValid && isNameValid && isProducerValid && isModelValid && isDateValid && isColorValid;
     inStock = document.getElementById('inStock');
     if (inStock.checked) {
         isPriceValid = validatePrice(document.getElementById('price'));
+        if (!isPriceValid) {
+            document.getElementById("priceError").innerHTML = "Price is incorrect";
+        } else {
+            document.getElementById("priceError").innerHTML = "";
+        }
         isValid = isValid && isPriceValid;
     }
     return isValid;
