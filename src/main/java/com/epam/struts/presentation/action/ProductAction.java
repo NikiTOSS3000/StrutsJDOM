@@ -2,7 +2,7 @@ package com.epam.struts.presentation.action;
 
 import com.epam.struts.presentation.form.ProductForm;
 import com.epam.struts.resources.Constants;
-import com.epam.struts.service.XMLService;
+import com.epam.struts.service.ProductXMLService;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +36,7 @@ public final class ProductAction extends MappingDispatchAction {
             }
             int category = Integer.parseInt(productForm.getCategory());
             int subcategory = Integer.parseInt(productForm.getSubcategory());
-            XMLService.update(productForm.getDocument(), ids, category, subcategory);
+            ProductXMLService.update(productForm.getDocument(), ids, category, subcategory);
         }
         resetToken(request);
         ActionRedirect redirect = new ActionRedirect(mapping.findForward(SUCCESS_MAPPING));
@@ -50,7 +50,7 @@ public final class ProductAction extends MappingDispatchAction {
             throws Exception {
         ProductForm productForm = (ProductForm) form;
         if (isTokenValid(request)) {
-            XMLService.addProduct(new HashMap<String, Object>(), productForm.getProduct());
+            ProductXMLService.addProduct(new HashMap<String, Object>(), productForm.getProduct());
         }
         resetToken(request);
         ActionRedirect redirect = new ActionRedirect(mapping.findForward(SUCCESS_MAPPING));

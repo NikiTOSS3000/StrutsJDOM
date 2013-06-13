@@ -3,41 +3,36 @@ package com.epam.struts.service;
 import com.epam.struts.model.Product;
 import com.epam.struts.presentation.servlet.JDOMServlet;
 import com.epam.struts.resources.Constants;
+import com.epam.struts.util.IOUtil;
 import com.epam.struts.util.MessageManager;
-import com.epam.struts.xsl.ProductsTransformerService;
+import com.epam.struts.xsl.TransformerService;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-import javax.xml.transform.TransformerException;
 import org.apache.log4j.Logger;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.Namespace;
 import org.jdom2.input.SAXBuilder;
-import org.jdom2.output.Format;
-import org.jdom2.output.XMLOutputter;
 
-public final class XMLService {
+public final class ProductXMLService {
 
     private static final Logger logger = Logger.getLogger("com.epam.struts.service");
-    private final static ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
-    private final static String ERROR_MSG_PREFIX = "Errors: ";
+    private static final TransformerService service = TransformerService.getInstance();
 
     public static Document getDocument(String name) {
         Document document = null;
         try {
-            lock.readLock().lock();
+            service.getReadLock().lock();
             document = new SAXBuilder().build(new File(name));
         } catch (JDOMException ex) {
             logger.error(ex.getMessage());
         } catch (IOException ex) {
             logger.error(ex.getMessage());
         } finally {
-            lock.readLock().unlock();
+            service.getReadLock().unlock();
         }
         return document;
     }
@@ -74,31 +69,9 @@ public final class XMLService {
                 }
             }
         }
-        writeDocument(document, JDOMServlet.getPath() + MessageManager.getStr("XML_PATH"));
-    }
-
-    public static String getTransformedResponse(String xml, String xsl, HashMap<String, Object> param) {
-        String s = null;
-        ProductsTransformerService transformerService = ProductsTransformerService.getInstance();
-        try {
-            s = transformerService.transform(xml, xsl, param);
-        } catch (TransformerException ex) {
-            logger.error(ex);
-            s = ERROR_MSG_PREFIX + ex.getMessage();
-        }
-        return s;
-    }
-
-    public static boolean writeInFile(String s, String file) {
-        try {
-            FileWriter writer = new FileWriter(file);
-            writer.write(s);
-            writer.close();
-            return true;
-        } catch (IOException ex) {
-            logger.error(ex);
-            return false;
-        }
+        service.getReadLock().lock();
+        IOUtil.writeDocument(document, JDOMServlet.getPath() + MessageManager.getStr("XML_PATH"));
+        service.getReadLock().unlock();
     }
 
     public static void addProduct(HashMap<String, Object> param, Product product) {
@@ -114,24 +87,13 @@ public final class XMLService {
         param.put(Constants.PRICE, product.getPrice());
         String inStock = ((Boolean) product.isInStock()).toString();
         param.put(Constants.INSTOCK, inStock);
-        lock.readLock().lock();
-        String transformedResponse = getTransformedResponse(xml, xsl, param);
-        lock.readLock().unlock();
-        lock.writeLock().lock();
-        writeInFile(transformedResponse, xml);
-        lock.writeLock().unlock();
+        String xslPath = JDOMServlet.getPath() + MessageManager.getStr("SAVE_XSL");
+        service.getReadLock().lock();
+        String transformedResponse = service.getTransformedResponse(xml, xslPath, xsl, param);
+        service.getReadLock().unlock();
+        service.getWriteLock().lock();
+        IOUtil.writeInFile(transformedResponse, xml);
+        service.getWriteLock().unlock();
     }
 
-    public static void writeDocument(Document document, String file) {
-        try {
-            XMLOutputter xmlOutput = new XMLOutputter();
-            xmlOutput.setFormat(Format.getPrettyFormat());
-            lock.writeLock().lock();
-            xmlOutput.output(document, new FileWriter(file));
-        } catch (IOException ex) {
-            logger.error(ex.getMessage());
-        } finally {
-            lock.writeLock().unlock();
-        }
-    }
 }

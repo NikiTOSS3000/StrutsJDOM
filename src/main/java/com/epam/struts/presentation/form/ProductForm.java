@@ -2,7 +2,7 @@ package com.epam.struts.presentation.form;
 
 import com.epam.struts.model.Product;
 import com.epam.struts.presentation.servlet.JDOMServlet;
-import com.epam.struts.service.XMLService;
+import com.epam.struts.service.ProductXMLService;
 import com.epam.struts.util.MessageManager;
 import org.apache.struts.action.ActionForm;
 import org.jdom2.Document;
@@ -16,7 +16,7 @@ public final class ProductForm extends ActionForm{
 
     public ProductForm() {
         product = new Product();
-        document = XMLService.getDocument(JDOMServlet.getPath() + MessageManager.getStr("XML_PATH"));
+        document = ProductXMLService.getDocument(JDOMServlet.getPath() + MessageManager.getStr("XML_PATH"));
     }
 
     public Document getDocument() {

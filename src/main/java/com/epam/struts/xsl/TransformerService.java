@@ -1,14 +1,12 @@
 package com.epam.struts.xsl;
 
-import com.epam.struts.presentation.servlet.JDOMServlet;
-import com.epam.struts.resources.Constants;
-import com.epam.struts.util.MessageManager;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.xml.transform.Source;
 import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
@@ -19,27 +17,35 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import org.apache.log4j.Logger;
 
-public final class ProductsTransformerService {
-    private final static Logger logger = Logger.getLogger("com.epam.struts.xsl");
+public final class TransformerService {
+
+    private final static Logger logger = Logger.getLogger(TransformerService.class);
+    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
     private final HashMap<String, Templates> templates = new HashMap<String, Templates>();
     private final TransformerFactory factory = TransformerFactory.newInstance();
-    private static ProductsTransformerService instance = null;
-    
-    private ProductsTransformerService() {
-        String path = JDOMServlet.getPath();
-        addTemplate(Constants.SAVE, path + MessageManager.getStr("SAVE_XSL"));
+    private static TransformerService instance = null;
+
+    private TransformerService() {
     }
-    
+
+    public ReentrantReadWriteLock.ReadLock getReadLock() {
+        return lock.readLock();
+    }
+
+    public ReentrantReadWriteLock.WriteLock getWriteLock() {
+        return lock.writeLock();
+    }
+
     public void addTemplate(String key, String xsl) {
-        try {       
+        try {
             Source source = getSource(xsl);
             Templates template = factory.newTemplates(source);
             templates.put(key, template);
         } catch (TransformerConfigurationException ex) {
             logger.error(ex);
-        } 
+        }
     }
-    
+
     public Transformer getTransformer(String xsl) {
         Transformer transformer = null;
         try {
@@ -49,9 +55,10 @@ public final class ProductsTransformerService {
         }
         return transformer;
     }
-    
-    public String transform(String file, String xsl, Map<String, Object> param) throws TransformerException {
-        Transformer transformer = instance.getTransformer(xsl);
+
+    public String transform(String xmlPath, String xslKey, String xslPath, Map<String, Object> param) throws TransformerException {
+        addTemplate(xslKey, xslPath);
+        Transformer transformer = instance.getTransformer(xslKey);
         StringWriter writer = new StringWriter();
         if (param != null) {
             Set<String> keySet = param.keySet();
@@ -59,17 +66,27 @@ public final class ProductsTransformerService {
                 transformer.setParameter(key, param.get(key));
             }
         }
-        transformer.transform(instance.getSource(file), new StreamResult(writer));
+        transformer.transform(instance.getSource(xmlPath), new StreamResult(writer));
         return writer.toString();
     }
-    
-    public static ProductsTransformerService getInstance() {
+
+    public String getTransformedResponse(String xml, String xsl, String xslPath, HashMap<String, Object> param) {
+        String s = null;
+        try {
+            s = transform(xml, xsl, xslPath, param);
+        } catch (TransformerException ex) {
+            logger.error(ex);
+        }
+        return s;
+    }
+
+    public static TransformerService getInstance() {
         if (instance == null) {
-            instance = new ProductsTransformerService();
+            instance = new TransformerService();
         }
         return instance;
     }
-    
+
     public Source getSource(String file) {
         Source source = null;
         try {
